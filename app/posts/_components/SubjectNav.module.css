@@ -1,0 +1,10 @@
+.subjectList {
+  display: flex;
+  gap: 12px;
+}
+
+.subjectItem {
+  font-size: 14px;
+  color: gray;
+  cursor: pointer;
+}

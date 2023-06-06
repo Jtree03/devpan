@@ -1,13 +1,11 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model TechStack {
@@ -15,7 +13,73 @@ model TechStack {
   name        String
   description String
   image       String
-  likeCount   Int       @default(0)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime?
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime? @updatedAt @map("updated_at")
+
+  category   Category? @relation(fields: [categoryID], references: [id])
+  categoryID Int?      @unique @map("category_id")
+
+  counts TechStackCount?
+
+  @@map("tech_stacks")
+}
+
+model TechStackCount {
+  viewCount Int @default(0) @map("view_count")
+  likeCount Int @default(0) @map("like_count")
+
+  techStack   TechStack @relation(fields: [techStackID], references: [id])
+  techStackID Int       @id @map("tech_stack_id")
+
+  @@map("tech_stack_counts")
+}
+
+model Category {
+  id   Int    @id @default(autoincrement())
+  name String
+  slug String
+
+  techStack TechStack?
+
+  subjects Subject[]
+
+  @@map("categories")
+}
+
+model Subject {
+  id   Int    @id @default(autoincrement())
+  name String
+  slug String
+
+  Category   Category @relation(fields: [categoryID], references: [id])
+  categoryID Int      @map("category_id")
+
+  posts Post[]
+
+  @@map("subjects")
+}
+
+model Post {
+  id        Int       @id @default(autoincrement())
+  title     String
+  content   String
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
+
+  subject   Subject @relation(fields: [subjectID], references: [id])
+  subjectID Int     @map("subject_id")
+
+  counts PostCount?
+
+  @@map("posts")
+}
+
+model PostCount {
+  viewCount Int @default(0) @map("view_count")
+  likeCount Int @default(0) @map("like_count")
+
+  post   Post @relation(fields: [postID], references: [id])
+  postID Int  @id @map("post_id")
+
+  @@map("post_counts")
 }

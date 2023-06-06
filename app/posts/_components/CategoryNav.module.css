@@ -1,0 +1,19 @@
+.categoryList {
+}
+
+@media screen and (max-width: 768px) {
+  .categoryList {
+    display: flex;
+    gap: 12px;
+  }
+}
+
+.categoryItem {
+  font-size: 14px;
+  line-height: 2;
+  color: gray;
+  cursor: pointer;
+}
+.categoryItem:hover {
+  text-decoration: underline;
+}

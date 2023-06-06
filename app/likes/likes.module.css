@@ -1,23 +1,22 @@
-.main {
+.layout {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
+  min-height: 40vh;
+  margin-top: 25px;
 }
 
 .techStackList {
   display: grid;
-  gap: 8px;
-  grid-template-columns: repeat(4, 1fr);
-  padding: 16px;
+  gap: 12px;
+  grid-template-columns: repeat(6, 1fr);
+  padding-inline: 24px;
 }
 
 @media screen and (max-width: 900px) {
   .techStackList {
     grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    padding-inline: 12px;
   }
-}
-
-.techStackItem {
-  width: 100%;
 }

@@ -1,34 +1,24 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# <img src="./asset/devpan.svg" width="30" /> 개발판
 
-## Getting Started
+## 소개
 
-First, run the development server:
+개발판은 개발 이야기를 자유롭게 나눌 수 있는 곳 입니다.
+React 이야기를 나누다가도 Next.js 이야기를 나눌 수 있고
+특정 프레임워크를 이야기하다가도 광범위한 이야기를 하고 싶을 때!
+개발판을 이용해주세요!
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+## 스택
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+개발판은 Next.js 와 Prisma, Supabase 만을 이용해서 구현합니다.
+서버 컴포넌트와 서버 액션을 활용하며 필요해질 때까지 백엔드를 따로 나누지 않습니다.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| 이름     | 설명                                                                 |
+| -------- | -------------------------------------------------------------------- |
+| Next.js  | 서버 컴포넌트, 서버 액션을 위한 프레임워크                           |
+| Prisma   | DB 에 저장해야하는 데이터를 정의하고 ORM 으로 만들어 주는 라이브러리 |
+| Supabase | Postgres Database 연결, 인증, 실시간 API 용                          |
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## 기여
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+PR 과 Issue 는 언제나 열려있습니다.
+상단의 Pull Request 및 Issue 탭을 확인해주세요!

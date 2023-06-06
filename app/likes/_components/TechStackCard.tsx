@@ -2,50 +2,76 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { TechStack } from "@prisma/client";
+import Link from "next/link";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { TechStack, TechStackCount } from "@prisma/client";
 
-import AnimateHeart from "./AnimateHeart";
+import { Database } from "@/lib/database.types";
+
+import AnimateHeart from "../../_components/AnimateHeart";
+
 import styles from "./TechStackCard.module.css";
 
-type Props = { techStack: TechStack; increment: (id: number) => Promise<void> };
+type CombinedTechStack = TechStack & { counts?: TechStackCount | null };
+
+type Props = {
+  techStack: CombinedTechStack;
+  increment: (id: number) => Promise<void>;
+};
 
 function TechStackCard(props: Props) {
   const { techStack, increment } = props;
 
   return (
-    <div className={styles.techStackCard}>
-      <ImageSection image={techStack.image} />
-      <InfoSection {...techStack} increment={increment} />
-      <DescriptionSection description={techStack.description} />
-    </div>
+    <li className={styles.techStackCard}>
+      <ImageSection techStack={techStack} />
+      <InfoSection serverTechStack={techStack} increment={increment} />
+      <DescriptionSection techStack={techStack} />
+    </li>
   );
 }
 
 export default TechStackCard;
 
-function ImageSection({ image }: { image: string }) {
+function ImageSection({ techStack }: { techStack: CombinedTechStack }) {
   return (
-    <div className={styles.techStackImageWrapper}>
-      <Image
-        alt="tech_image"
-        src={image}
-        fill
-        className={styles.techStackImage}
-      />
-    </div>
+    <Link
+      href={
+        techStack.categoryID
+          ? {
+              pathname: "/posts",
+              query: { categoryID: techStack.categoryID },
+            }
+          : "/posts"
+      }
+    >
+      <div className={styles.techStackImageWrapper}>
+        {techStack.image ? (
+          <Image
+            alt="tech_image"
+            src={techStack.image}
+            fill
+            className={styles.techStackImage}
+          />
+        ) : (
+          <div className={styles.techStackSubstitution}>{techStack.name}</div>
+        )}
+      </div>
+    </Link>
   );
 }
 
 function InfoSection({
-  id,
-  name,
-  likeCount,
-  createdAt,
-  updatedAt,
+  serverTechStack,
   increment,
-}: TechStack & {
+}: {
+  serverTechStack: CombinedTechStack;
   increment: (id: number) => Promise<void>;
 }) {
+  const [techStack, setTechStack] = useState(serverTechStack);
+  const { id, name, counts, createdAt, updatedAt } = techStack;
+  const supabase = createClientComponentClient<Database>();
+
   const autoIncrement = useRef(0);
   const [clickAnimationArr, setClickAnimationArr] = useState<number[]>([]);
   const [likeClickCount, setLikeClickCount] = useState(0);
@@ -55,6 +81,29 @@ function InfoSection({
     setClickAnimationArr((prev) => [...prev, autoIncrement.current++]);
     await increment(id);
   };
+
+  useEffect(() => {
+    const channel = supabase
+      .channel(`techstack:${id}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "TechStack",
+          filter: `id=eq.${id}`,
+        },
+        (payload) => {
+          console.log(payload);
+          setLikeClickCount((prev) => prev + 1);
+          setClickAnimationArr((prev) => [...prev, autoIncrement.current++]);
+        }
+      )
+      .subscribe();
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [id, supabase]);
 
   return (
     <div className={styles.techStackTitleWrapper}>
@@ -73,13 +122,17 @@ function InfoSection({
             <AnimateHeart key={id} id={id} />
           ))}
         </div>
-        <div className={styles.likeText}>{likeCount + likeClickCount}</div>
+        <div className={styles.likeText}>
+          {counts?.likeCount ?? 0 + likeClickCount}
+        </div>
       </button>
     </div>
   );
 }
 
-function DescriptionSection({ description }: { description: string }) {
+function DescriptionSection({ techStack }: { techStack: CombinedTechStack }) {
+  const { description } = techStack;
+
   const descriptionWrapperRef = useRef<HTMLDivElement | null>(null);
   const descriptionContentRef = useRef<HTMLDivElement | null>(null);
 

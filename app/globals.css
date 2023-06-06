@@ -7,38 +7,15 @@
   font-family: "Spoqa Han Sans Neo", "sans-serif";
 }
 
-html,
 body {
   max-width: 100vw;
   overflow-x: hidden;
+  min-height: 100vh;
+  background: white;
+  display: flex;
+  flex-direction: column;
 }
 
-body {
-  color: rgb(0, 0, 0);
-  background: linear-gradient(to bottom, transparent, rgb(255, 255, 255))
-    rgb(214, 219, 220);
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-ul {
-  list-style: none;
-}
-
-button {
-  border: none;
-  margin: 0;
-  padding: 0;
-  width: auto;
-  overflow: visible;
-  background: transparent;
-  color: inherit;
-  font: inherit;
-  line-height: normal;
-
-  -webkit-font-smoothing: inherit;
-  -moz-osx-font-smoothing: inherit;
+body > main {
+  flex: 1 0 auto;
 }

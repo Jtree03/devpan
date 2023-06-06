@@ -1,4 +1,5 @@
 .techStackCard {
+  width: 100%;
   border: 1px solid lightgray;
   border-radius: 8px;
   background: white;
@@ -26,6 +27,21 @@
   transform: scale(0.8);
 }
 
+.techStackSubstitution {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  font-weight: 600;
+  line-height: 1.5;
+  color: gray;
+  height: 100%;
+  transition: transform 0.2s ease-in-out;
+}
+.techStackSubstitution:hover {
+  transform: scale(0.8);
+}
+
 .techStackTitleWrapper {
   display: flex;
   align-items: center;
@@ -35,20 +51,23 @@
 
 .techStackTitle {
   font-size: 24px;
+  line-height: 1.5;
 }
 
 .techStackDate {
+  font-size: 12px;
   color: gray;
+  line-height: 1.5;
 }
 
 .techStackLikeWrapper {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  position: relative;
   margin-top: 8px;
-  margin-right: 16px;
+  margin-right: 8px;
   color: palevioletred;
   user-select: none;
   cursor: pointer;
