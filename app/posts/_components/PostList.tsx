@@ -28,7 +28,7 @@ export default async function PostList({
       orderBy: { createdAt: "desc" },
       skip: offset,
       take: Math.min(limit, 20),
-      include: { subject: true },
+      include: { subject: true, counts: true },
     });
   } else {
     if (categoryID) {
@@ -37,14 +37,14 @@ export default async function PostList({
         orderBy: { createdAt: "desc" },
         skip: offset,
         take: Math.min(limit, 20),
-        include: { subject: true },
+        include: { subject: true, counts: true },
       });
     } else {
       posts = await prisma.post.findMany({
         orderBy: { createdAt: "desc" },
         skip: offset,
         take: Math.min(limit, 20),
-        include: { subject: true },
+        include: { subject: true, counts: true },
       });
     }
   }
@@ -82,8 +82,8 @@ async function ListHeader({ categoryID }: { categoryID?: string }) {
     <div className={styles.listHeader}>
       <SubjectNav serverSubjects={subjects} />
       <div className={styles.shapeDescription}>
-        <div>♥ 좋아요 수</div>
-        <div>◆ 읽은 수</div>
+        <div>♥ 좋아요</div>
+        <div>◆ 조회수</div>
       </div>
     </div>
   );
@@ -112,11 +112,11 @@ function PostItem(post: CommonPost) {
       <div className={styles.right}>
         <div className={styles.rightItem}>
           <div>♥</div>
-          <div>{post.counts?.likeCount}</div>
+          <div>{post.counts?.likeCount ?? 0}</div>
         </div>
         <div className={styles.rightItem}>
           <div>◆</div>
-          <div>{post.counts?.viewCount}</div>
+          <div>{post.counts?.viewCount ?? 0}</div>
         </div>
       </div>
     </div>

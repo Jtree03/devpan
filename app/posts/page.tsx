@@ -7,7 +7,7 @@ import Loading from "../_components/Loading";
 import PostList from "./_components/PostList";
 import CategoryNav from "./_components/CategoryNav";
 
-import styles from "./page.module.css";
+import styles from "./posts.module.css";
 
 type Props = {
   searchParams: {
@@ -38,6 +38,7 @@ export default async function PostsPage({ searchParams }: Props) {
         <section className={styles.left}>
           <div className={styles.titleSection}>
             <h2 className={styles.title}>{category.name}</h2>
+            <button className={styles.writeButton}>글쓰기</button>
           </div>
           <Suspense fallback={<Loading />}>
             <PostList

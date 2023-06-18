@@ -51,7 +51,7 @@ model Subject {
   name String
   slug String
 
-  Category   Category @relation(fields: [categoryID], references: [id])
+  category   Category @relation(fields: [categoryID], references: [id])
   categoryID Int      @map("category_id")
 
   posts Post[]
@@ -63,6 +63,8 @@ model Post {
   id        Int       @id @default(autoincrement())
   title     String
   content   String
+  writer    String    @default("")
+  avatar    String    @default("")
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime? @updatedAt @map("updated_at")
 
@@ -70,6 +72,7 @@ model Post {
   subjectID Int     @map("subject_id")
 
   counts PostCount?
+  likes  PostLike[]
 
   @@map("posts")
 }
@@ -82,4 +85,15 @@ model PostCount {
   postID Int  @id @map("post_id")
 
   @@map("post_counts")
+}
+
+model PostLike {
+  id        Int      @id @default(autoincrement())
+  userID    String   @map("user_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  post   Post @relation(fields: [postID], references: [id])
+  postID Int  @map("post_id")
+
+  @@map("post_likes")
 }

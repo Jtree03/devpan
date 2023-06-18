@@ -8,7 +8,6 @@ import {
 } from "@supabase/auth-helpers-nextjs";
 
 import { Database } from "@/lib/database.types";
-import { GithubUser } from "@/lib/custom.types";
 import DevpanLogo from "@/asset/devpan.svg";
 
 import styles from "./Header.module.css";
@@ -25,9 +24,7 @@ export default function Header({ session }: Props) {
     await supabase.auth.signInWithOAuth({
       provider: "github",
     });
-    setTimeout(() => {
-      router.refresh();
-    }, 2000);
+    router.refresh();
   };
 
   const handleGithubLogout = async () => {
@@ -64,11 +61,11 @@ export default function Header({ session }: Props) {
           <div className={styles.profile}>
             <Image
               alt="profile"
-              src={(session.user.user_metadata as GithubUser).avatar_url}
+              src={session.user.user_metadata.avatar_url}
               width={32}
               height={32}
             />
-            <span>{(session.user.user_metadata as GithubUser).user_name}</span>
+            <span>{session.user.user_metadata.user_name}</span>
             <button onClick={handleGithubLogout}>logout</button>
           </div>
         ) : (

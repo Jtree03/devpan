@@ -13,8 +13,21 @@ export async function generateMetadata(
   { params }: Props,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
+  const { postID } = params;
+
+  if (!postID) {
+    notFound();
+  }
+
+  const post = await prisma.post.findFirst({
+    where: { id: parseInt(postID, 10) },
+  });
+
+  if (!post) {
+    notFound();
+  }
   return {
-    title: `post - ${params.postID}`,
+    title: `${post.title} | Devpan`,
   };
 }
 
@@ -27,6 +40,10 @@ export default async function PostDetailPage({ params }: Props) {
 
   const post = await prisma.post.findFirst({
     where: { id: parseInt(postID, 10) },
+    include: {
+      subject: { include: { category: true } },
+      counts: true,
+    },
   });
 
   if (!post) {
