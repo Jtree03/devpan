@@ -17,7 +17,7 @@ export default function CategoryNav({ serverCategories }: Props) {
   const searchParams = useSearchParams();
 
   return (
-    <div>
+    <div className={styles.box}>
       <div className={styles.inputWrapper}>
         <input
           placeholder="스택 검색"

@@ -1,3 +1,6 @@
+.box {
+}
+
 .inputWrapper {
   display: flex;
   align-items: center;
@@ -13,6 +16,7 @@
 .eraseIcon {
   width: 16px;
   height: 16px;
+  font-size: 16px;
   cursor: pointer;
   transform: rotate(45deg);
 }
