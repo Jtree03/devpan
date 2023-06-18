@@ -35,9 +35,6 @@ export async function generateMetadata(
 }
 
 export default async function PostDetailPage({ params }: Props) {
-  const supabase = createServerComponentClient<Database>({ cookies });
-  const userResponse = await supabase.auth.getUser();
-
   const { postID } = params;
 
   if (!postID) {
@@ -76,8 +73,9 @@ export default async function PostDetailPage({ params }: Props) {
 
   const incrementLikeCount = async () => {
     "use server";
+    const supabase = createServerComponentClient<Database>({ cookies });
+    const userResponse = await supabase.auth.getUser();
     if (!userResponse.data.user) {
-      alert("로그인이 필요합니다.");
       return;
     }
     const updateCountQuery = prisma.post.update({
@@ -108,8 +106,9 @@ export default async function PostDetailPage({ params }: Props) {
 
   const decrementLikeCount = async () => {
     "use server";
+    const supabase = createServerComponentClient<Database>({ cookies });
+    const userResponse = await supabase.auth.getUser();
     if (!userResponse.data.user) {
-      alert("로그인이 필요합니다.");
       return;
     }
     const updateCountQuery = prisma.post.update({
@@ -140,8 +139,9 @@ export default async function PostDetailPage({ params }: Props) {
 
   const incrementOrDecrementLikeCount = async () => {
     "use server";
+    const supabase = createServerComponentClient<Database>({ cookies });
+    const userResponse = await supabase.auth.getUser();
     if (!userResponse.data.user) {
-      alert("로그인이 필요합니다.");
       return;
     }
     const like = await prisma.postLike.findFirst({
@@ -157,6 +157,8 @@ export default async function PostDetailPage({ params }: Props) {
     }
   };
 
+  const supabase = createServerComponentClient<Database>({ cookies });
+  const userResponse = await supabase.auth.getUser();
   const postLike =
     userResponse.data.user?.id &&
     (await prisma.postLike.findFirst({
@@ -166,11 +168,16 @@ export default async function PostDetailPage({ params }: Props) {
       },
     }));
 
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
   return (
     <RealtimePost
       serverPost={post}
       incrementOrDecrementLikeCount={incrementOrDecrementLikeCount}
       postLike={!!postLike}
+      session={session}
     />
   );
 }

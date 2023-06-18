@@ -3,12 +3,11 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { Session } from "@supabase/auth-helpers-nextjs";
 import { Category, Post, PostCount, Subject } from "@prisma/client";
 
 import DevpanSVG from "@/asset/devpan.svg";
 import AnimateHeart from "@/app/_components/AnimateHeart";
-import { Database } from "@/lib/database.types";
 import { timeSince } from "@/lib/datetime";
 
 import styles from "./RealtimePost.module.css";
@@ -22,16 +21,17 @@ type Props = {
   };
   incrementOrDecrementLikeCount: () => Promise<void>;
   postLike?: boolean;
+  session: Session | null;
 };
 
 function RealtimePost({
   serverPost,
   incrementOrDecrementLikeCount,
   postLike,
+  session,
 }: Props) {
   const isMounted = useRef(false);
   const router = useRouter();
-  const supabase = createClientComponentClient<Database>();
   const [post, setPost] = useState(serverPost);
   const [clickHeart, setClickHeart] = useState(postLike);
 
@@ -41,6 +41,10 @@ function RealtimePost({
   }, [serverPost]);
 
   const onHeartClick = () => {
+    if (!session) {
+      alert("로그인이 필요합니다.");
+      return;
+    }
     setClickHeart((p) => !p);
     incrementOrDecrementLikeCount();
   };
