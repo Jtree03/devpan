@@ -19,3 +19,17 @@ body {
 body > main {
   flex: 1 0 auto;
 }
+
+::-webkit-scrollbar {
+  width: 8px;
+  background: white;
+}
+
+::-webkit-scrollbar-thumb {
+  background: lightgray;
+  -webkit-border-radius: 1ex;
+}
+
+::-webkit-scrollbar-corner {
+  background: white;
+}

@@ -37,13 +37,13 @@
 
 .titleSection {
   display: flex;
-  align-items: center;
   justify-content: space-between;
 }
 
 .title {
   font-size: 20px;
   font-weight: bold;
+  padding: 8px 0;
 }
 
 .writeButton {

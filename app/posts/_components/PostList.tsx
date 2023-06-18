@@ -1,11 +1,13 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Post, PostCount, Subject } from "@prisma/client";
 
+import DevpanSVG from "@/asset/devpan.svg";
 import { prisma } from "@/lib/prisma";
-
-import styles from "./PostList.module.css";
-import SubjectNav from "./SubjectNav";
 import { timeSince } from "@/lib/datetime";
+
+import SubjectNav from "./SubjectNav";
+import styles from "./PostList.module.css";
 
 type Props = {
   categoryID?: string;
@@ -101,10 +103,22 @@ function PostItem(post: CommonPost) {
         <div>
           <div className={styles.title}>
             <Link href={`/posts/${post.id}`}>{post.title}</Link>
-            <div className={styles.date}>
-              {post.updatedAt
-                ? timeSince(post.updatedAt)
-                : timeSince(post.createdAt)}
+            <div className={styles.info}>
+              <div className={styles.writer}>
+                <Image
+                  alt="profile"
+                  src={post.avatar || DevpanSVG}
+                  width={20}
+                  height={20}
+                />
+                {post.writer || "anonymous"}
+              </div>
+              ·
+              <div className={styles.date}>
+                {post.updatedAt
+                  ? timeSince(post.updatedAt)
+                  : timeSince(post.createdAt)}
+              </div>
             </div>
           </div>
         </div>

@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
+import Link from "next/link";
 
 import { prisma } from "@/lib/prisma";
 
@@ -32,13 +33,27 @@ export default async function PostsPage({ searchParams }: Props) {
     notFound();
   }
 
+  const subject = subjectID
+    ? await prisma.subject.findFirst({
+        where: { id: parseInt(subjectID, 10) },
+      })
+    : undefined;
+
+  const editLink = new URLSearchParams();
+  if (categoryID) editLink.set("categoryID", categoryID);
+  if (subjectID) editLink.set("subjectID", subjectID);
+
   return (
     <div className={styles.page}>
       <div className={styles.split}>
         <section className={styles.left}>
           <div className={styles.titleSection}>
             <h2 className={styles.title}>{category.name}</h2>
-            <button className={styles.writeButton}>글쓰기</button>
+            {subject && subject?.name !== "공지" && (
+              <Link href={`/posts/edit?${editLink.toString()}`}>
+                <button className={styles.writeButton}>글쓰기</button>
+              </Link>
+            )}
           </div>
           <Suspense fallback={<Loading />}>
             <PostList

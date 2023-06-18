@@ -32,6 +32,13 @@
   align-items: center;
 }
 
+.info {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
 .title {
   font-size: 24px;
   font-weight: 600;
@@ -40,7 +47,6 @@
 
 .writer {
   font-size: 14px;
-  margin-bottom: 12px;
 }
 .writer:hover {
   text-decoration: underline;
@@ -50,7 +56,6 @@
 .date {
   font-size: 14px;
   color: gray;
-  margin-bottom: 24px;
 }
 
 .count {

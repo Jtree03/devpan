@@ -1,15 +1,17 @@
 "use client";
 
-import { useEffect, useState } from "react";
-
-import { Database } from "@/lib/database.types";
-import { Category, Post, PostCount, Subject } from "@prisma/client";
+import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { Category, Post, PostCount, Subject } from "@prisma/client";
+
+import DevpanSVG from "@/asset/devpan.svg";
+import AnimateHeart from "@/app/_components/AnimateHeart";
+import { Database } from "@/lib/database.types";
+import { timeSince } from "@/lib/datetime";
 
 import styles from "./RealtimePost.module.css";
-import { timeSince } from "@/lib/datetime";
-import { useRouter } from "next/navigation";
-import AnimateHeart from "@/app/_components/AnimateHeart";
 
 type Props = {
   serverPost: Post & {
@@ -18,20 +20,29 @@ type Props = {
     };
     counts: PostCount | null;
   };
+  incrementOrDecrementLikeCount: () => Promise<void>;
+  postLike?: boolean;
 };
 
-function RealtimePost({ serverPost }: Props) {
+function RealtimePost({
+  serverPost,
+  incrementOrDecrementLikeCount,
+  postLike,
+}: Props) {
+  const isMounted = useRef(false);
   const router = useRouter();
   const supabase = createClientComponentClient<Database>();
   const [post, setPost] = useState(serverPost);
-  const [clickHeart, setClickHeart] = useState(false);
+  const [clickHeart, setClickHeart] = useState(postLike);
 
   useEffect(() => {
     setPost(serverPost);
+    isMounted.current = true;
   }, [serverPost]);
 
   const onHeartClick = () => {
     setClickHeart((p) => !p);
+    incrementOrDecrementLikeCount();
   };
 
   // useEffect(() => {
@@ -58,7 +69,13 @@ function RealtimePost({ serverPost }: Props) {
 
   return (
     <div className={styles.box}>
-      <button className={styles.category} onClick={() => router.back()}>
+      <button
+        className={styles.category}
+        onClick={() => {
+          router.back();
+          router.refresh();
+        }}
+      >
         <div className={styles.backButton}>{"<"}</div>
         {post.subject.category.name}
       </button>
@@ -68,8 +85,14 @@ function RealtimePost({ serverPost }: Props) {
           <div className={styles.title}>{post.title}</div>
         </div>
         <div className={styles.header}>
-          <div style={{ display: "flex", gap: 4 }}>
-            <div className={styles.writer}>제트</div>·
+          <div className={styles.info}>
+            <Image
+              alt="avatar"
+              src={post?.avatar || DevpanSVG}
+              width={20}
+              height={20}
+            />
+            <div className={styles.writer}>{post.writer}</div>·
             <div className={styles.date}>{timeSince(post.createdAt)}</div>
           </div>
           <div className={styles.count}>
@@ -100,7 +123,9 @@ function RealtimePost({ serverPost }: Props) {
       <div className={styles.footer}>
         <button className={styles.heartButton} onClick={onHeartClick}>
           {clickHeart ? "♥" : "♡"}
-          {clickHeart && <AnimateHeart key={post.id} id={post.id} />}
+          {isMounted.current && clickHeart && (
+            <AnimateHeart key={post.id} id={post.id} />
+          )}
         </button>
       </div>
     </div>

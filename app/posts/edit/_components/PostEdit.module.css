@@ -1,0 +1,48 @@
+.box {
+  max-width: 1200px;
+  margin: 24px auto;
+  padding: 0 16px;
+}
+
+.header {
+  margin-bottom: 16px;
+}
+
+.info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.titleInput {
+  font-size: 24px;
+  font-weight: bold;
+  border: none;
+  outline: none;
+}
+
+.writerWrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.writerInput {
+  font-size: 14px;
+  color: gray;
+  border: none;
+  outline: none;
+}
+
+.sendButton {
+  font-size: 14px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid lightgray;
+  background-color: #f8f9fa;
+  color: #212529;
+  cursor: pointer;
+}
+.sendButton:hover {
+  background-color: #e9ecef;
+}
