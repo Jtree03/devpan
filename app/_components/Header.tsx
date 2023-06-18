@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import {
@@ -17,14 +18,25 @@ type Props = {
 };
 
 export default function Header({ session }: Props) {
+  const [clientSession, setClientSession] = useState(session);
   const router = useRouter();
   const supabase = createClientComponentClient<Database>();
+
+  useEffect(() => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_, session) => {
+      setClientSession(session);
+    });
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [router, supabase.auth]);
 
   const handleGithubSignIn = async () => {
     await supabase.auth.signInWithOAuth({
       provider: "github",
     });
-    router.refresh();
   };
 
   const handleGithubLogout = async () => {
@@ -57,15 +69,15 @@ export default function Header({ session }: Props) {
         </div>
       </div>
       <div>
-        {session ? (
+        {clientSession ? (
           <div className={styles.profile}>
             <Image
               alt="profile"
-              src={session.user.user_metadata.avatar_url}
+              src={clientSession.user.user_metadata.avatar_url}
               width={32}
               height={32}
             />
-            <span>{session.user.user_metadata.user_name}</span>
+            <span>{clientSession.user.user_metadata.user_name}</span>
             <button onClick={handleGithubLogout}>logout</button>
           </div>
         ) : (

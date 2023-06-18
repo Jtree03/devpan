@@ -74,8 +74,10 @@ export default async function PostDetailPage({ params }: Props) {
   const incrementLikeCount = async () => {
     "use server";
     const supabase = createServerComponentClient<Database>({ cookies });
-    const userResponse = await supabase.auth.getUser();
-    if (!userResponse.data.user) {
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    if (!session) {
       return;
     }
     const updateCountQuery = prisma.post.update({
@@ -98,7 +100,7 @@ export default async function PostDetailPage({ params }: Props) {
     const updateLikeQuery = prisma.postLike.create({
       data: {
         postID: parseInt(postID, 10),
-        userID: userResponse.data.user.id,
+        userID: session.user.id,
       },
     });
     await prisma.$transaction([updateCountQuery, updateLikeQuery]);
@@ -107,8 +109,10 @@ export default async function PostDetailPage({ params }: Props) {
   const decrementLikeCount = async () => {
     "use server";
     const supabase = createServerComponentClient<Database>({ cookies });
-    const userResponse = await supabase.auth.getUser();
-    if (!userResponse.data.user) {
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    if (!session) {
       return;
     }
     const updateCountQuery = prisma.post.update({
@@ -131,7 +135,7 @@ export default async function PostDetailPage({ params }: Props) {
     const deleteLikeQuery = prisma.postLike.deleteMany({
       where: {
         postID: parseInt(postID, 10),
-        userID: userResponse.data.user.id,
+        userID: session.user.id,
       },
     });
     await prisma.$transaction([updateCountQuery, deleteLikeQuery]);
@@ -140,14 +144,16 @@ export default async function PostDetailPage({ params }: Props) {
   const incrementOrDecrementLikeCount = async () => {
     "use server";
     const supabase = createServerComponentClient<Database>({ cookies });
-    const userResponse = await supabase.auth.getUser();
-    if (!userResponse.data.user) {
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    if (!session) {
       return;
     }
     const like = await prisma.postLike.findFirst({
       where: {
         postID: parseInt(postID, 10),
-        userID: userResponse.data.user.id,
+        userID: session.user.id,
       },
     });
     if (like) {
@@ -158,19 +164,17 @@ export default async function PostDetailPage({ params }: Props) {
   };
 
   const supabase = createServerComponentClient<Database>({ cookies });
-  const userResponse = await supabase.auth.getUser();
-  const postLike =
-    userResponse.data.user?.id &&
-    (await prisma.postLike.findFirst({
-      where: {
-        postID: parseInt(postID, 10),
-        userID: userResponse.data.user.id,
-      },
-    }));
-
   const {
     data: { session },
   } = await supabase.auth.getSession();
+  const postLike =
+    session?.user.id &&
+    (await prisma.postLike.findFirst({
+      where: {
+        postID: parseInt(postID, 10),
+        userID: session.user.id,
+      },
+    }));
 
   return (
     <RealtimePost
